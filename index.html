@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tool Dự Đoán Tài Xỉu - SumClub Style</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #2b1e1e, #000000);
+      color: #fff;
+    }
+
+    .container {
+      max-width: 460px;
+      margin: 60px auto;
+      background: #1a0f0f;
+      border: 2px solid #a87d3f;
+      border-radius: 18px;
+      box-shadow: 0 0 20px #ffcc9933;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: #ffcc99;
+      margin-bottom: 20px;
+      text-shadow: 0 0 8px #ffcc99;
+    }
+
+    input[type="text"] {
+      width: 90%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #a87d3f;
+      background-color: #2d1b1b;
+      color: #fff;
+    }
+
+    button {
+      padding: 12px 26px;
+      font-size: 16px;
+      background: linear-gradient(to right, #ffcc66, #ff9900);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #ff9900;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #ffaa33, #ff8800);
+    }
+
+    .result {
+      font-size: 22px;
+      margin-top: 20px;
+      padding: 12px;
+      background: #331a00;
+      border: 2px solid #ffcc66;
+      border-radius: 10px;
+      color: #ffcc66;
+    }
+
+    .history {
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .history h3 {
+      font-size: 16px;
+      color: #ffcc99;
+    }
+
+    .history ul {
+      list-style: none;
+      padding: 0;
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+
+    .history li {
+      margin-bottom: 6px;
+      color: #ddd;
+    }
+
+    .credit {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tool Dự Đoán Tài Xỉu</h1>
+    <input type="text" id="input" placeholder="Nhập 10 kết quả gần nhất (phân cách bằng dấu phẩy)">
+    <button onclick="predict()">Dự Đoán</button>
+    <div class="result" id="result">Chưa có dự đoán.</div>
+    <div class="history">
+      <h3>Lịch sử:</h3>
+      <ul id="history"></ul>
+    </div>
+    <div class="credit">© Trần Quốc Trịnh - SumClub Style</div>
+  </div>
+
+  <script>
+    function predict() {
+      const input = document.getElementById("input").value.trim();
+      const resultBox = document.getElementById("result");
+      const historyBox = document.getElementById("history");
+      const values = input.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+
+      if (values.length < 5) {
+        resultBox.textContent = "⚠️ Nhập ít nhất 5 kết quả.";
+        return;
+      }
+
+      const avg = values.reduce((a, b) => a + b, 0) / values.length;
+      let result = "";
+      let percent = 0;
+
+      if (avg > 10.5) {
+        result = "TÀI";
+        percent = Math.min(95, Math.round((avg - 10.5) * 10 + 70));
+      } else {
+        result = "XỈU";
+        percent = Math.min(95, Math.round((10.5 - avg) * 10 + 70));
+      }
+
+      resultBox.textContent = `${result} (${percent}%)`;
+
+      const li = document.createElement("li");
+      li.textContent = `${result} (${percent}%) từ [${values.join(", ")}]`;
+      historyBox.prepend(li);
+    }
+  </script>
+</body>
+</html>
